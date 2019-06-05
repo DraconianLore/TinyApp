@@ -1,21 +1,30 @@
-   <!-- views/partials/head.ejs -->
-   <a href="/urls"><h1>TinyAPP</h1></a><br>
-
+<!-- views/partials/_header.ejs -->
+<div style='display: flex; flex-direction: column; align-items: center'>
+    <a href="/urls">
+        <h1>TinyAPP</h1>
+    </a>
+    <div style='display: flex; align-self: flex-start'>
+        <a href='/urls/new'>Create a new URL</a>
+    </div>
+    <div style='display: flex; align-self: flex-end;'>
         <% if (!username) { %>
-          <label for="login">Log in:</label>
-
-   <form class="form-inline" action="/login" method="POST">
-      <div class="form-group row">
-        <input class="form-control" type="text" name="username" placeholder="usename" style="width: 100px; margin: 5px">
-        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-      </div>
-    </form>
-    <% } else { %>
-
-    <p>Welcome back <%= username %></p>
- <form method="POST" action="/logout">
-        <button type="submit" class="btn btn-danger">Log Out</button></form>
-    <% } %>
-   <hr>
- <a href='/urls/new'>Create a new URL</a>
-
+        <div>
+            <label for="login">Log in:</label>
+            <form class="form-inline" action="/login" method="POST">
+                <div class="form-group row">
+                    <input class="form-control" type="text" name="username" placeholder="usename" style="width: 100px; margin: 5px">
+                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                </div>
+            </form>
+        </div>
+        <% } else { %>
+        <div align=right>
+            <p>Welcome back <strong>
+                    <%= username %></strong></p>
+            <form method="POST" action="/logout">
+                <button type="submit" class="btn btn-danger">Log Out</button></form>
+        </div>
+        <% } %>
+        <hr>
+    </div>
+    <div style="display: flex; flex-direction: column; flex-shrink: 1; maxWidth: 500px; justify-content: flex-start">
