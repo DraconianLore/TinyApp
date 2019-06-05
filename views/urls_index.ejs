@@ -18,9 +18,10 @@
     <% for (url in urls) { %>
 
       <li><form style="display: inline-block" method="POST" action="/urls/<%= url %>/delete">
-        <button type="submit" class="btn btn-primary btn-sm">Delete</button></form>
-        <a href ='/urls/<%= url %>'><%= url %> - <%=  urls[url] %>
-      </a></li>
+        <button style="margin-right:5px; type="submit" class="btn btn-danger btn-sm">Delete 🗑</button></form><a href='/urls/<%= url %>'><button type="button" class="btn btn-primary btn-sm">Edit &#128221;</button></a>
+        <%= url %> - <%=  urls[url] %>
+
+      </li>
       <% } %>
       </ul>
 

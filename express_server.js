@@ -100,6 +100,13 @@ app.post("/urls", (req, res) => {
     backupDatabase();
     res.redirect(`urls/${newShort}`);
 });
+app.post("/urls/:shortURL", (req, res) => {
+    const shortURL = req.params.shortURL;
+    const newLongURL = req.body.longURL;
+    urlDatabase[shortURL] = newLongURL;
+    backupDatabase();
+    res.redirect(`/urls/${shortURL}`);
+});
 app.post("/urls/:shortURL/delete", (req, res) => {
     const shortURL = req.params.shortURL;
     delete urlDatabase[shortURL];
