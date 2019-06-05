@@ -1,4 +1,21 @@
    <!-- views/partials/head.ejs -->
-   <a href="/urls"><h1>TinyAPP</h1></a>
+   <a href="/urls"><h1>TinyAPP</h1></a><br>
+
+        <% if (!username) { %>
+          <label for="login">Log in:</label>
+
+   <form class="form-inline" action="/login" method="POST">
+      <div class="form-group row">
+        <input class="form-control" type="text" name="username" placeholder="usename" style="width: 100px; margin: 5px">
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+      </div>
+    </form>
+    <% } else { %>
+
+    <p>Welcome back <%= username %></p>
+ <form method="POST" action="/logout">
+        <button type="submit" class="btn btn-danger">Log Out</button></form>
+    <% } %>
+   <hr>
  <a href='/urls/new'>Create a new URL</a>
 

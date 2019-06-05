@@ -1,16 +1,18 @@
 const fs = require("fs");
 const express = require("express");
-const morgan = require('morgan')
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 const app = express();
 
 const PORT = 8080; // default port 8080
 
 const bodyParser = require("body-parser");
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 app.use(morgan('dev'));
-
+let username = '';
 
 function generateRandomString() {
     const charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -66,18 +68,26 @@ app.listen(PORT, () => {
     console.log(`TinyAPP listening on port ${PORT}!`);
 });
 app.get("/urls/new", (req, res) => {
-    res.render("urls_new");
+    let templateVars = { username: req.cookies["username"] };
+    res.render("urls_new", templateVars);
 });
 app.get("/urls.json", (req, res) => {
     res.json(urlDatabase);
 });
 app.get("/urls", (req, res) => {
-    let templateVars = { urls: urlDatabase };
+    let templateVars = {
+        urls: urlDatabase,
+        username: req.cookies["username"]
+    };
     res.render("urls_index", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-    let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase };
+    let templateVars = {
+        shortURL: req.params.shortURL,
+        longURL: urlDatabase,
+        username: req.cookies["username"]
+    };
     if (urlDatabase[templateVars.shortURL]) {
         res.render("urls_show", templateVars);
     } else {
@@ -113,7 +123,18 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     backupDatabase();
     res.redirect('/urls');
 });
-
+app.post("/login", (req, res) => {
+    username = req.body.username;
+    res.cookie('username', username);
+    let originUrl = req.headers.referer;
+    res.redirect(originUrl);
+});
+app.post("/logout", (req, res) => {
+    res.clearCookie('username');
+    username = "";
+    let originUrl = req.headers.referer;
+    res.redirect(originUrl);
+});
 
 //catchall route
 app.get('*', (req, res) => {
