@@ -57,7 +57,7 @@ const backupDatabase = () => {
 // };
 
 app.get("/", (req, res) => {
-    res.send("Hello!");
+    res.send("ERROR: Page not found!");
 });
 
 app.listen(PORT, () => {
@@ -76,7 +76,11 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
     let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase };
-    res.render("urls_show", templateVars);
+    if (urlDatabase[templateVars.shortURL]) {
+        res.render("urls_show", templateVars);
+    } else {
+        res.redirect('/');
+    }
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -95,4 +99,10 @@ app.post("/urls", (req, res) => {
     backupDatabase();
     console.log("Database Backup Complete");
     res.redirect(`urls/${newShort}`);
+});
+
+
+//catchall route
+app.get('*', (req, res) => {
+    res.redirect('/');
 });
