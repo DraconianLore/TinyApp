@@ -17,7 +17,6 @@ function generateRandomString() {
     for (let i = 0; i < 6; i++) {
         randomStr += charSet.charAt(randomNum());
     }
-
     return randomStr;
 
 }
