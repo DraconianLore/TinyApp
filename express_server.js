@@ -80,7 +80,7 @@ app.get("/u/:shortURL", (req, res) => {
     if (urlDatabase[shortURL]) {
         res.redirect(urlDatabase[shortURL]);
     } else {
-        res.redirect('/urls');
+        res.redirect('https://http.cat/404');
     }
 
 });
