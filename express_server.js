@@ -41,7 +41,7 @@ fs.open('./database.backup', 'r+', function(err, fd) {
     });
 });
 setTimeout(function() {
-    console.log("Database Loaded")
+    console.log("### Database Loaded ###")
 }, 1000);
 
 const backupDatabase = () => {
@@ -49,6 +49,8 @@ const backupDatabase = () => {
         if (err) {
             return console.error(err);
         }
+        console.log("### Database Backup Complete ###");
+
     })
 };
 // {        -- old hard-coded DB --
@@ -93,12 +95,16 @@ app.get("/u/:shortURL", (req, res) => {
 
 });
 app.post("/urls", (req, res) => {
-    console.log(req.body.longURL); // Log the POST request body to the console
     let newShort = generateRandomString();
     urlDatabase[newShort] = req.body.longURL;
     backupDatabase();
-    console.log("Database Backup Complete");
     res.redirect(`urls/${newShort}`);
+});
+app.post("/urls/:shortURL/delete", (req, res) => {
+    const shortURL = req.params.shortURL;
+    delete urlDatabase[shortURL];
+    backupDatabase();
+    res.redirect('/urls');
 });
 
 

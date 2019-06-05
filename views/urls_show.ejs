@@ -11,13 +11,14 @@
 
 <body style="font-size:20px; padding:50px;">
 <% include ../partials/_header %>
-    <h1>Shortened URL:
-        <%= shortURL %>
+    <h1>Shortened URL:<br>
+        <a href ='/urls/<%= shortURL %>'><%= shortURL %></a>
         <br>
         <a href='<%= longURL[shortURL] %>'>
             <%= longURL[shortURL] %>
         </a>
-        <form method="POST" action="/urls/<%= shortURL %>/delete">DELETE</form>
+        <form method="POST" action="/urls/<%= shortURL %>/delete">
+        <button type="submit" class="btn btn-primary">Delete</button></form>
 </body>
 
 </html>
