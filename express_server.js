@@ -1,15 +1,20 @@
-var fs = require("fs");
-var express = require("express");
-var app = express();
-var PORT = 8080; // default port 8080
+const fs = require("fs");
+const express = require("express");
+const morgan = require('morgan')
+const app = express();
+
+const PORT = 8080; // default port 8080
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
+app.use(morgan('dev'));
+
+
 function generateRandomString() {
-    let charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-    let randomNum = () =>
+    const charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    const randomNum = () =>
         Math.floor(Math.random() * charSet.length);
 
     let randomStr = ""
@@ -21,7 +26,7 @@ function generateRandomString() {
 
 }
 let urlDatabase = {};
-var buf = new Buffer.alloc(1024);
+let buf = new Buffer.alloc(1024);
 
 fs.open('./database.backup', 'r+', function(err, fd) {
     if (err) {
@@ -46,7 +51,7 @@ const backupDatabase = () => {
         }
     })
 };
-// {
+// {        -- old hard-coded DB --
 //     "b2xVn2": "http://www.lighthouselabs.ca",
 //     "9sm5xK": "http://www.google.com"
 // };
