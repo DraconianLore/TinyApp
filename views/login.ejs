@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <title>Register- TinyApp</title>
+    <title>Login- TinyApp</title>
 </head>
 
 <body style="font-size:20px; padding:50px;">
     <% include ../partials/_header %>
-    <h1><strong>Welcome to TinyApp</strong></strong></h1>
-
-    <form action="/register" method="POST">
+    <h1><strong>Welcome back!</strong></strong></h1>
+    <form action="/login" method="POST">
         <div class="form-group">
             <label for="email">Email address:</label>
             <input type="email" class="form-control" name="email">
@@ -23,7 +22,7 @@
             <input type="password" class="form-control" name="password">
             <input type="hidden" name="originUrl" value=<%=originUrl %>>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">Log in</button>
     </form>
     <% include ../partials/_footer %>
 </body>
