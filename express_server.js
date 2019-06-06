@@ -81,6 +81,11 @@ app.get("/urls/new", (req, res) => {
         user_id: req.cookies["user_id"],
         user: users
     };
+    
+    if (!templateVars.user_id === undefined) {
+        res.status(403);
+        res.redirect("/login");
+    }
     res.render("urls_new", templateVars);
 });
 app.get("/urls.json", (req, res) => {
@@ -116,8 +121,12 @@ app.get("/u/:shortURL", (req, res) => {
     }
 });
 app.get("/login", (req, res) => {
+    let originUrl = "/urls";
+    if (req.headers.referrer) {
+        originUrl = req.headers.referer;
+    }
     let templateVars = {
-        originUrl: req.headers.referer,
+        originUrl: originUrl,
         user_id: req.cookies["user_id"],
         user: users
     };
@@ -142,7 +151,7 @@ app.post("/login", (req, res) => {
             validUser = true;
         }
     }
-    if (!validUser){
+    if (!validUser) {
         res.status(403).send(
             '<h2>Invalid Email or password!</h2><br><h3> <a href="/login">Go back to login page</a></h3>'
         );
@@ -206,7 +215,12 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 app.post("/login", (req, res) => {
     let user_id = req.body.user_id;
     res.cookie("user_id", user_id);
-    let originUrl = req.headers.referer;
+    if (req.headers.referer) {
+        let originUrl = req.headers.referer;
+    } else {
+        let originUrl = "/urls";
+    }
+    console.log(originUrl);
     res.redirect(originUrl);
 });
 app.post("/logout", (req, res) => {
