@@ -15,7 +15,7 @@
         <a href ='/urls/<%= shortURL %>'><%= shortURL %></a>
 
         <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
-       <input class="form-control" type="text" name="longURL" value="<%= longURL[shortURL] %>" style="width: 300px; margin: 1em">
+       <input class="form-control" type="text" name="longURL" value="<%= longURL %>" style="width: 300px; margin: 1em">
 
         <button style="margin-right:5px; type="submit" class="btn btn-primary">Edit</button></form>
          <form method="POST" action="/urls/<%= shortURL %>/delete">

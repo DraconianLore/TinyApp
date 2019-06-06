@@ -12,17 +12,18 @@
 
 <body style="font-size:20px; padding:50px;">
 <% include ../partials/_header %>
-
+<% if (user_id) { %>
 <h2> Current URL Shortcuts:</h2>
     <ul>
     <% for (url in urls) { %>
-
+      <% if (urls[url].userID == user_id) { %>
       <li><form style="display: inline-block" method="POST" action="/urls/<%= url %>/delete">
-        <button style="margin-right:5px; type="submit" class="btn btn-danger btn-sm">Delete 🗑</button></form><a href='/urls/<%= url %>'><button type="button" class="btn btn-primary btn-sm">Edit &#128221;</button></a>
-        <%= url %> - <%=  urls[url] %>
+        <button style="margin-right:5px; type="submit" class="btn btn-danger btn-sm">Delete 🗑</button></form>
+        <a href='/urls/<%= url %>'><button type="button" class="btn btn-primary btn-sm">Edit &#128221;</button></a>
+        <%= url %> - <%=  urls[url].longURL %>
 
       </li>
-      <% } %>
+      <% }}} %>
       </ul>
 <% include ../partials/_footer %>
 </body>

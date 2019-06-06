@@ -27,15 +27,10 @@ function generateRandomString() {
 }
 let urlDatabase = {};
 const users = {
-    userRandomID: {
-        id: "userRandomID",
-        email: "user@example.com",
-        password: "purple-monkey-dinosaur"
-    },
-    user2RandomID: {
-        id: "user2RandomID",
-        email: "user2@example.com",
-        password: "dishwasher-funk"
+    master: {
+        id: "master",
+        email: "admin@admin.admin",
+        password: "admin"
     }
 };
 let buf = new Buffer.alloc(1024);
@@ -81,10 +76,10 @@ app.get("/urls/new", (req, res) => {
         user_id: req.cookies["user_id"],
         user: users
     };
-    
-    if (!templateVars.user_id === undefined) {
+    if (templateVars.user_id === undefined) {
         res.status(403);
         res.redirect("/login");
+        return;
     }
     res.render("urls_new", templateVars);
 });
@@ -100,12 +95,22 @@ app.get("/urls", (req, res) => {
     res.render("urls_index", templateVars);
 });
 app.get("/urls/:shortURL", (req, res) => {
+
+    let shortURL = req.params.shortURL;
+    console.log(urlDatabase[shortURL].longURL)
     let templateVars = {
-        shortURL: req.params.shortURL,
-        longURL: urlDatabase,
+        shortURL: shortURL,
+        longURL: urlDatabase[shortURL].longURL,
         user_id: req.cookies["user_id"],
         user: users
     };
+    // check if user owns URL
+    if (templateVars.user_id != urlDatabase[templateVars.shortURL].userID) {
+        res.status(403);
+        res.redirect("/urls");
+        return;
+    }
+
     if (urlDatabase[templateVars.shortURL]) {
         res.render("urls_show", templateVars);
     } else {
@@ -115,7 +120,7 @@ app.get("/urls/:shortURL", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
     if (urlDatabase[shortURL]) {
-        res.redirect(urlDatabase[shortURL]);
+        res.redirect(urlDatabase[shortURL].longURL);
     } else {
         res.redirect("https://http.cat/404");
     }
@@ -155,7 +160,7 @@ app.post("/login", (req, res) => {
         res.status(403).send(
             '<h2>Invalid Email or password!</h2><br><h3> <a href="/login">Go back to login page</a></h3>'
         );
-    };
+    }
     res.cookie("user_id", userID);
     if (!req.body.originUrl) {
         res.redirect("/urls");
@@ -178,6 +183,7 @@ app.post("/register", (req, res) => {
                 .send(
                     '<h2>Email already exists!</h2><br> <a href="/login">Go to login page</a>'
                 );
+            return;
         }
     }
     users[userRandomID] = {
@@ -195,19 +201,35 @@ app.post("/register", (req, res) => {
 });
 app.post("/urls", (req, res) => {
     let newShort = generateRandomString();
-    urlDatabase[newShort] = req.body.longURL;
+    urlDatabase[newShort] = {
+        longURL: req.body.longURL,
+        userID: req.cookies["user_id"]
+    }
     backupDatabase();
     res.redirect(`urls/${newShort}`);
 });
 app.post("/urls/:shortURL", (req, res) => {
     const shortURL = req.params.shortURL;
+    if (req.cookies["user_id"] === undefined) {
+        res.status(403);
+        res.redirect("/urls");
+        return;
+    }
     const newLongURL = req.body.longURL;
-    urlDatabase[shortURL] = newLongURL;
+    urlDatabase[shortURL] = {
+        longURL: newLongURL,
+        userID: req.cookies["user_id"],
+    }
     backupDatabase();
     res.redirect(`/urls/${shortURL}`);
 });
 app.post("/urls/:shortURL/delete", (req, res) => {
     const shortURL = req.params.shortURL;
+    if (req.cookies["user_id"] != urlDatabase[shortURL].userID) {
+        res.status(403);
+        res.redirect("/urls");
+        return;
+    }
     delete urlDatabase[shortURL];
     backupDatabase();
     res.redirect("/urls");
@@ -220,7 +242,6 @@ app.post("/login", (req, res) => {
     } else {
         let originUrl = "/urls";
     }
-    console.log(originUrl);
     res.redirect(originUrl);
 });
 app.post("/logout", (req, res) => {
