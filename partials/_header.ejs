@@ -1,25 +1,23 @@
 <!-- views/partials/_header.ejs -->
 <div style='display: flex; flex-direction: column; align-items: center'>
-    <a href="/urls"><h1>TinyAPP</h1>
+    <a href="/urls">
+        <h1>TinyAPP</h1>
     </a>
     <div style='display: flex; align-self: flex-start'>
         <a href='/urls/new'>Create a new URL</a>
     </div>
     <div style='display: flex; align-self: flex-end;'>
-        <% if (!username) { %>
+        <% if (!user_id) { %>
         <div>
-            <label for="login">Log in:</label>
-            <form class="form-inline" action="/login" method="POST">
-                <div class="form-group row">
-                    <input class="form-control" type="text" name="username" placeholder="usename" style="width: 100px; margin: 5px">
-                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                </div>
-            </form>
+            <label for="login">Log in:(not implimented yet)</label><br>
+            <a href="/register">
+                <button type="submit" class="btn btn-success">Register</button>
+            </a>
         </div>
         <% } else { %>
         <div align=right>
             <p>Welcome back <strong>
-                    <%= username %></strong></p>
+                    <%= user[user_id].email %></strong></p>
             <form method="POST" action="/logout">
                 <button type="submit" class="btn btn-danger">Log Out</button></form>
         </div>
