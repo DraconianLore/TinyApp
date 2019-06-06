@@ -3,8 +3,12 @@ const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const app = express();
+const bcrypt = require('bcrypt');
 
 const PORT = 8080; // default port 8080
+function hashPassword(password) {
+    return bcrypt.hashSync(password, 10);
+} 
 
 const bodyParser = require("body-parser");
 app.use(cookieParser());
@@ -148,18 +152,21 @@ app.get("/register", (req, res) => {
 app.post("/login", (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
-    let validUser = false;
+   let validUser = false;
     let userID = '';
     for (let user in users) {
-        if (users[user].email == email && users[user].password == password) {
+        if (users[user].email == email &&  bcrypt.compareSync(password, users[user].password)) {
             userID = user;
             validUser = true;
+            
+    
         }
     }
     if (!validUser) {
         res.status(403).send(
             '<h2>Invalid Email or password!</h2><br><h3> <a href="/login">Go back to login page</a></h3>'
         );
+        return;
     }
     res.cookie("user_id", userID);
     if (!req.body.originUrl) {
@@ -172,7 +179,7 @@ app.post("/login", (req, res) => {
 app.post("/register", (req, res) => {
     const userRandomID = "U" + generateRandomString();
     const email = req.body.email;
-    const password = req.body.password;
+    const password = hashPassword(req.body.password);
     if (email == "" || password == "") {
         res.status(400).send("Invalid Email or Password");
     }
@@ -237,10 +244,9 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 app.post("/login", (req, res) => {
     let user_id = req.body.user_id;
     res.cookie("user_id", user_id);
+    let originUrl = "/urls";
     if (req.headers.referer) {
-        let originUrl = req.headers.referer;
-    } else {
-        let originUrl = "/urls";
+        originUrl = req.headers.referer;
     }
     res.redirect(originUrl);
 });
