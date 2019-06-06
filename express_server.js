@@ -144,7 +144,7 @@ app.post("/login", (req, res) => {
     }
     if (!validUser){
         res.status(403).send(
-            '<h2>Invalid Email or password!</h2><br> <a href="/login">Go to login page</a>'
+            '<h2>Invalid Email or password!</h2><br><h3> <a href="/login">Go back to login page</a></h3>'
         );
     };
     res.cookie("user_id", userID);
