@@ -12,7 +12,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 app.use(morgan('dev'));
-let username = '';
 
 function generateRandomString() {
     const charSet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -124,14 +123,13 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     res.redirect('/urls');
 });
 app.post("/login", (req, res) => {
-    username = req.body.username;
+    let username = req.body.username;
     res.cookie('username', username);
     let originUrl = req.headers.referer;
     res.redirect(originUrl);
 });
 app.post("/logout", (req, res) => {
     res.clearCookie('username');
-    username = "";
     let originUrl = req.headers.referer;
     res.redirect(originUrl);
 });
