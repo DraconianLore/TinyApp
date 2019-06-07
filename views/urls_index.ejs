@@ -22,8 +22,13 @@
           <button style="margin-right:5px; type="submit" class="btn btn-danger btn-sm">Delete 🗑</button></form>
           <a href='/urls/<%= url %>'><button type="button" class="btn btn-primary btn-sm">Edit &#128221;</button></a>
       </li>
-      <% }}} %>
-      </ul>
+      <% }} %>
+         </ul>
+         <% } else { %>
+
+        <div style="text-align: center"> <em>Please <a href="/login">log in</a> or <a href="/register">register</a> <br>to create or edit your TinyURLs</em></div>
+        <% } %>
+     
 <% include ../partials/_footer %>
 </body>
 </html>

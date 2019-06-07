@@ -4,12 +4,11 @@ const morgan = require("morgan");
 const cookieSession = require('cookie-session')
 const app = express();
 const bcrypt = require('bcrypt');
+const PORT = 8080;
 
-const PORT = 8080; // default port 8080
 function hashPassword(password) {
     return bcrypt.hashSync(password, 10);
 }
-
 const bodyParser = require("body-parser");
 app.use(cookieSession({
     name: 'session',
@@ -20,9 +19,9 @@ app.use(cookieSession({
 }))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
-
 app.use(morgan("dev"));
 
+// random string generator
 function generateRandomString() {
     const charSet =
         "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -38,7 +37,6 @@ function generateRandomString() {
 let urlDatabase = {};
 let users = {};
 // Load databases 
-
 const loadUsers = () => {
     let buf = new Buffer.alloc(1024);
     fs.open("users.backup", "r+", function (err, fd) {
@@ -281,7 +279,6 @@ app.post("/logout", (req, res) => {
     let originUrl = req.headers.referer;
     res.redirect(originUrl);
 });
-
 
 
 
