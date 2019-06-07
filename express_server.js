@@ -107,7 +107,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
 
     let shortURL = req.params.shortURL;
-    console.log(urlDatabase[shortURL].longURL)
+
     let templateVars = {
         shortURL: shortURL,
         longURL: urlDatabase[shortURL].longURL,
@@ -140,7 +140,7 @@ app.get("/login", (req, res) => {
     if (req.headers.referrer) {
         originUrl = req.headers.referer;
     }
-    console.log(req.session.user_id)
+    
     let templateVars = {
         originUrl: originUrl,
         user_id: req.session.user_id,

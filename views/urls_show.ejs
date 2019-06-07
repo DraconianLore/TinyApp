@@ -12,7 +12,7 @@
 <body style="font-size:20px; padding:50px;">
 <% include ../partials/_header %>
     <h1>Shortened URL:<br>
-        <a href ='/urls/<%= shortURL %>'><%= shortURL %></a>
+        <a href ='/urls/<%= longURL %>'><%= shortURL %></a>
 
         <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
        <input class="form-control" type="text" name="longURL" value="<%= longURL %>" style="width: 300px; margin: 1em">
