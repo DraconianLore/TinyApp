@@ -10,18 +10,17 @@
     <title>URL Index - TinyApp</title>
   </head>
 
-<body style="font-size:20px; padding:50px;">
+<body style="font-size:20px;">
 <% include ../partials/_header %>
 <% if (user_id) { %>
 <h2> Current URL Shortcuts:</h2>
     <ul>
     <% for (url in urls) { %>
       <% if (urls[url].userID == user_id) { %>
-      <li><form style="display: inline-block" method="POST" action="/urls/<%= url %>/delete">
-        <button style="margin-right:5px; type="submit" class="btn btn-danger btn-sm">Delete 🗑</button></form>
-        <a href='/urls/<%= url %>'><button type="button" class="btn btn-primary btn-sm">Edit &#128221;</button></a>
-        <%= url %> - <%=  urls[url].longURL %>
-
+      <li><%= url %><br><%=  urls[url].longURL %><br>
+        <form style="display: inline-block" method="POST" action="/urls/<%= url %>/delete">
+          <button style="margin-right:5px; type="submit" class="btn btn-danger btn-sm">Delete 🗑</button></form>
+          <a href='/urls/<%= url %>'><button type="button" class="btn btn-primary btn-sm">Edit &#128221;</button></a>
       </li>
       <% }}} %>
       </ul>

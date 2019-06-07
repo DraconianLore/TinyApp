@@ -9,18 +9,19 @@
     <title>Show URL - TinyApp</title>
 </head>
 
-<body style="font-size:20px; padding:50px;">
+<body style="font-size:20px;">
 <% include ../partials/_header %>
-    <h1>Shortened URL:<br>
-        <a href ='/urls/<%= longURL %>'><%= shortURL %></a>
-
-        <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
-       <input class="form-control" type="text" name="longURL" value="<%= longURL %>" style="width: 300px; margin: 1em">
-
-        <button style="margin-right:5px; type="submit" class="btn btn-primary">Edit</button></form>
-         <form method="POST" action="/urls/<%= shortURL %>/delete">
+    <h5><%= longURL %></h5>
+    <h2>TinyURL:<br>
+        <a href ='/urls/<%= longURL %>'><%= shortURL %></a></h2>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center">
+        <form action="/urls/<%= shortURL %>" method="POST">
+       <input class="form-control" type="text" name="longURL" value="<%= longURL %>" style="width: 300px;">
+    <div style="display: flex; align-items: center; justify-content: center; padding-top: 5px">
+        <button type="submit" class="btn btn-primary">Edit</button></form>
+         <form method="POST" action="/urls/<%= shortURL %>/delete"> &nbsp;
         <button type="submit" class="btn btn-danger">Delete</button></form>
-
+</div></div>
 
 
 <% include ../partials/_footer %>
