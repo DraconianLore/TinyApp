@@ -160,6 +160,10 @@ app.get("/login", (req, res) => {
     if (req.headers.referrer) {
         originUrl = req.headers.referer;
     }
+    if(req.session.user_id) {
+        res.redirect("/urls");
+        return;
+    }
 
     let templateVars = {
         originUrl: originUrl,
@@ -169,6 +173,10 @@ app.get("/login", (req, res) => {
     res.render("login", templateVars);
 });
 app.get("/register", (req, res) => {
+    if(req.session.user_id) {
+        res.redirect("/urls");
+        return;
+    }
     let templateVars = {
         user_id: req.session.user_id,
         user: users,
@@ -232,6 +240,10 @@ app.post("/register", (req, res) => {
 });
 app.post("/urls", (req, res) => {
     let newShort = generateRandomString();
+    if (!req.session.user_id) {
+        res.status(403).send("User not logged in!");
+        return;
+    }
     urlDatabase[newShort] = {
         longURL: req.body.longURL,
         userID: req.session.user_id
