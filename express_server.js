@@ -36,46 +36,68 @@ function generateRandomString() {
     return randomStr;
 }
 let urlDatabase = {};
-const users = {
-    master: {
-        id: "master",
-        email: "admin@admin.admin",
-        password: "admin"
-    }
-};
-let buf = new Buffer.alloc(1024);
+let users = {};
+// Load databases 
 
-fs.open("./database.backup", "r+", function (err, fd) {
-    if (err) {
-        return console.error(err);
-    }
-    fs.read(fd, buf, 0, buf.length, 0, function (err, bytes) {
-        if (err) {
-            console.log(err);
-        }
-        let db = buf.slice(0, bytes).toString();
-        urlDatabase = JSON.parse(db);
-    });
-});
-setTimeout(function () {
-    console.log("### Database Loaded ###");
-}, 1000);
-
-const backupDatabase = () => {
-    fs.writeFile("database.backup", JSON.stringify(urlDatabase), function (err) {
+const loadUsers = () => {
+    let buf = new Buffer.alloc(1024);
+    fs.open("users.backup", "r+", function (err, fd) {
         if (err) {
             return console.error(err);
         }
-        console.log("### Database Backup Complete ###");
+        fs.read(fd, buf, 0, buf.length, 0, function (err, bytes) {
+            if (err) {
+                console.log(err);
+            }
+            let db = buf.slice(0, bytes).toString();
+            users = JSON.parse(db);
+        });
+    });
+
+    setTimeout(function () {
+        console.log("### User Database Loaded ###");
+    }, 1000);
+}
+const loadURLs = () => {
+    let buf = new Buffer.alloc(1024);
+    fs.open("database.backup", "r+", function (err, fd) {
+        if (err) {
+            return console.error(err);
+        }
+        fs.read(fd, buf, 0, buf.length, 0, function (err, bytes) {
+            if (err) {
+                console.log(err);
+            }
+            let db = buf.slice(0, bytes).toString();
+            urlDatabase = JSON.parse(db);
+        });
+    });
+
+    setTimeout(function () {
+        console.log("### URL Database Loaded ###");
+    }, 1000);
+}
+loadUsers();
+loadURLs();
+
+
+const backupDatabase = (backupFile, database) => {
+    let whichDB = '';
+    if (database === users) {
+        whichDB = 'User';
+    } else {
+        whichDB = 'URL';
+    }
+    fs.writeFile(backupFile, JSON.stringify(database), function (err) {
+        if (err) {
+            return console.error(err);
+        }
+        console.log("###", whichDB, "Database Backup Complete ###");
     });
 };
-// {        -- old hard-coded DB --
-//     "b2xVn2": "http://www.lighthouselabs.ca",
-//     "9sm5xK": "http://www.google.com"
-// };
 
 app.get("/", (req, res) => {
-    res.send("ERROR: Page not found!");
+    res.redirect("/urls")
 });
 
 app.listen(PORT, () => {
@@ -140,7 +162,7 @@ app.get("/login", (req, res) => {
     if (req.headers.referrer) {
         originUrl = req.headers.referer;
     }
-    
+
     let templateVars = {
         originUrl: originUrl,
         user_id: req.session.user_id,
@@ -201,8 +223,9 @@ app.post("/register", (req, res) => {
         email: email,
         password: password
     };
+    backupDatabase("users.backup", users);
     req.session.user_id = userRandomID;
-        if (!req.body.originUrl) {
+    if (!req.body.originUrl) {
         res.redirect("/urls");
     } else {
         let originUrl = req.body.originUrl;
@@ -214,8 +237,8 @@ app.post("/urls", (req, res) => {
     urlDatabase[newShort] = {
         longURL: req.body.longURL,
         userID: req.session.user_id
-    }
-    backupDatabase();
+    };
+    backupDatabase("database.backup", urlDatabase);
     res.redirect(`urls/${newShort}`);
 });
 app.post("/urls/:shortURL", (req, res) => {
@@ -230,7 +253,7 @@ app.post("/urls/:shortURL", (req, res) => {
         longURL: newLongURL,
         userID: req.session.user_id,
     }
-    backupDatabase();
+    backupDatabase("database.backup", urlDatabase);
     res.redirect(`/urls/${shortURL}`);
 });
 app.post("/urls/:shortURL/delete", (req, res) => {
@@ -241,23 +264,26 @@ app.post("/urls/:shortURL/delete", (req, res) => {
         return;
     }
     delete urlDatabase[shortURL];
-    backupDatabase();
+    backupDatabase("database.backup", urlDatabase);
     res.redirect("/urls");
 });
 app.post("/login", (req, res) => {
     let user_id = req.body.user_id;
     req.session.user_id = user_id;
-        let originUrl = "/urls";
+    let originUrl = "/urls";
     if (req.headers.referer) {
         originUrl = req.headers.referer;
     }
     res.redirect(originUrl);
 });
 app.post("/logout", (req, res) => {
-    delete(req.session.user_id);
+    delete (req.session.user_id);
     let originUrl = req.headers.referer;
     res.redirect(originUrl);
 });
+
+
+
 
 //catchall route
 app.get("*", (req, res) => {
