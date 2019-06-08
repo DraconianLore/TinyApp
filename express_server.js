@@ -5,6 +5,8 @@ const cookieSession = require('cookie-session')
 const app = express();
 const bcrypt = require('bcrypt');
 const PORT = 8080;
+const methodOverride = require('method-override')
+const util = require('util')
 
 function hashPassword(password) {
     return bcrypt.hashSync(password, 10);
@@ -20,6 +22,7 @@ app.use(cookieSession({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
+app.use(methodOverride("_method"));
 
 // random string generator
 function generateRandomString() {
@@ -86,7 +89,7 @@ const backupDatabase = (backupFile, database) => {
     } else {
         whichDB = 'URL';
     }
-    fs.writeFile(backupFile, JSON.stringify(database), function (err) {
+   fs.writeFileSync(backupFile, JSON.stringify(database), function (err) {
         if (err) {
             return console.error(err);
         }
@@ -132,8 +135,10 @@ app.get("/urls/:shortURL", (req, res) => {
         shortURL: shortURL,
         longURL: urlDatabase[shortURL].longURL,
         user_id: req.session.user_id,
-        user: users
+        user: users,
+        info: urlDatabase[shortURL]
     };
+    
     // check if user owns URL
     if (templateVars.user_id != urlDatabase[templateVars.shortURL].userID) {
         res.status(403);
@@ -149,7 +154,27 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
+    let unique = '';
+    const date = new Date();
     if (urlDatabase[shortURL]) {
+        // set visitor cookie if it doesnt exist
+        if (!req.session.uniqueVisitor) {
+            unique = 'UV' + generateRandomString()
+            req.session.uniqueVisitor = unique;
+        } else {
+            unique = req.session.uniqueVisitor;
+        }
+        // track visitors
+        if (urlDatabase[shortURL].uniqueVisitors[unique] === undefined) {
+            urlDatabase[shortURL].uniqueVisitors[unique] = [];
+            urlDatabase[shortURL].uniqueViews++;
+
+        }
+        urlDatabase[shortURL].uniqueVisitors[unique].push(date.toUTCString());
+
+        urlDatabase[shortURL].views++;
+
+        backupDatabase("database.backup", urlDatabase);
         res.redirect(urlDatabase[shortURL].longURL);
     } else {
         res.redirect("https://http.cat/404");
@@ -160,7 +185,7 @@ app.get("/login", (req, res) => {
     if (req.headers.referrer) {
         originUrl = req.headers.referer;
     }
-    if(req.session.user_id) {
+    if (req.session.user_id) {
         res.redirect("/urls");
         return;
     }
@@ -173,7 +198,7 @@ app.get("/login", (req, res) => {
     res.render("login", templateVars);
 });
 app.get("/register", (req, res) => {
-    if(req.session.user_id) {
+    if (req.session.user_id) {
         res.redirect("/urls");
         return;
     }
@@ -246,12 +271,15 @@ app.post("/urls", (req, res) => {
     }
     urlDatabase[newShort] = {
         longURL: req.body.longURL,
-        userID: req.session.user_id
+        userID: req.session.user_id,
+        views: 0,
+        uniqueViews: 0,
+        uniqueVisitors: {}
     };
     backupDatabase("database.backup", urlDatabase);
     res.redirect(`urls/${newShort}`);
 });
-app.post("/urls/:shortURL", (req, res) => {
+app.put("/urls/:shortURL", (req, res) => {
     const shortURL = req.params.shortURL;
     if (req.session.user_id === undefined) {
         res.status(403);
@@ -262,11 +290,14 @@ app.post("/urls/:shortURL", (req, res) => {
     urlDatabase[shortURL] = {
         longURL: newLongURL,
         userID: req.session.user_id,
+        views: 0,
+        uniqueViews: 0,
+        uniqueVisitors: []
     }
     backupDatabase("database.backup", urlDatabase);
     res.redirect(`/urls/${shortURL}`);
 });
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL", (req, res) => {
     const shortURL = req.params.shortURL;
     if (req.session.user_id != urlDatabase[shortURL].userID) {
         res.status(403);
