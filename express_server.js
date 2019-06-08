@@ -41,7 +41,7 @@ let users = {};
 // Load databases 
 const loadUsers = () => {
     let buf = new Buffer.alloc(1024);
-    fs.open("users.backup", "r+", function (err, fd) {
+    fs.open("db/users.backup", "r+", function (err, fd) {
         if (err) {
             return console.error(err);
         }
@@ -60,7 +60,7 @@ const loadUsers = () => {
 }
 const loadURLs = () => {
     let buf = new Buffer.alloc(1024);
-    fs.open("database.backup", "r+", function (err, fd) {
+    fs.open("db/database.backup", "r+", function (err, fd) {
         if (err) {
             return console.error(err);
         }
@@ -173,7 +173,7 @@ app.get("/u/:shortURL", (req, res) => {
 
         urlDatabase[shortURL].views++;
 
-        backupDatabase("database.backup", urlDatabase);
+        backupDatabase("db/database.backup", urlDatabase);
         res.redirect(urlDatabase[shortURL].longURL);
     } else {
         res.redirect("https://http.cat/404");
@@ -253,7 +253,7 @@ app.post("/register", (req, res) => {
         email: email,
         password: password
     };
-    backupDatabase("users.backup", users);
+    backupDatabase("db/users.backup", users);
     req.session.user_id = userRandomID;
     if (!req.body.originUrl) {
         res.redirect("/urls");
@@ -275,7 +275,7 @@ app.post("/urls", (req, res) => {
         uniqueViews: 0,
         uniqueVisitors: {}
     };
-    backupDatabase("database.backup", urlDatabase);
+    backupDatabase("db/database.backup", urlDatabase);
     res.redirect(`urls/${newShort}`);
 });
 app.put("/urls/:shortURL", (req, res) => {
@@ -293,7 +293,7 @@ app.put("/urls/:shortURL", (req, res) => {
         uniqueViews: 0,
         uniqueVisitors: []
     }
-    backupDatabase("database.backup", urlDatabase);
+    backupDatabase("db/database.backup", urlDatabase);
     res.redirect(`/urls/${shortURL}`);
 });
 app.delete("/urls/:shortURL", (req, res) => {
@@ -304,7 +304,7 @@ app.delete("/urls/:shortURL", (req, res) => {
         return;
     }
     delete urlDatabase[shortURL];
-    backupDatabase("database.backup", urlDatabase);
+    backupDatabase("db/database.backup", urlDatabase);
     res.redirect("/urls");
 });
 app.post("/login", (req, res) => {
