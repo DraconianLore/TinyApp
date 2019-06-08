@@ -1,37 +1,37 @@
 <!-- views/partials/_header.ejs -->
 
 
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; ">
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; ">
     <div style=" max-width: 500px; border-style: solid; border-width: 2px; border-color: bisque;">
         <% if (user_id){ %>
         <form method="POST" action="/logout">
-    <button type="submit" class="btn btn-warning" style="margin-left: 20px">Log Out</button></form>
+            <button type="submit" class="btn btn-warning" style="margin-left: 20px">Log Out</button></form>
 
-    <% } %>
-<div style='display: flex; flex-direction: column; align-items: center; padding:50px;'>
-    <a href="/urls">
-
-        <h1>TinyAPP</h1>
-    </a>
-    <div>
-        <a href='/urls/new'>Create a new URL</a>
-    </div>
-    <div><br>
-        <% if (!user_id) { %>
-        <div>
-            <a href="/login">
-                <button type="submit" class="btn btn-primary">Log in</button>
-            </a><a href="/register">
-                <button type="submit" class="btn btn-success">Register</button>
-            </a>
-        </div>
-        <% } else { %>
-        <div align=right>
-            <p>Welcome back <strong>
-                    <%= user[user_id].email %></strong></p>
-            
-        </div>
         <% } %>
-        <hr>
-    </div>
-    <div style="display: flex; flex-direction: column; flex-shrink: 1; maxWidth: 500px; justify-content: flex-start">
+        <div style='display: flex; flex-direction: column; align-items: center; padding:50px;'>
+            <a href="/urls">
+
+                <h1>TinyAPP</h1>
+            </a>
+            <div>
+                <a href='/urls/new'>Create a new URL</a>
+            </div>
+            <div><br>
+                <% if (!user_id) { %>
+                <div>
+                    <a href="/login">
+                        <button type="submit" class="btn btn-primary">Log in</button>
+                    </a><a href="/register">
+                        <button type="submit" class="btn btn-success">Register</button>
+                    </a>
+                </div>
+                <% } else { %>
+                <div align=right>
+                    <p>Welcome back <strong>
+                            <%= user[user_id].email %></strong></p>
+
+                </div>
+                <% } %>
+                <hr>
+            </div>
+            <div style="display: flex; flex-direction: column; flex-shrink: 1; maxWidth: 500px; justify-content: flex-start">

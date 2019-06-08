@@ -5,33 +5,35 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>Show URL - TinyApp</title>
 </head>
 
 <body style="font-size:20px;">
-<% include ../partials/_header %>
+    <% include ../partials/_header %>
     <h5><%= longURL %></h5>
     <h2>TinyURL:<br>
-        <a href ='/u/<%= shortURL %>'><%= shortURL %></a></h2>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center">
+        <a href='/u/<%= shortURL %>'><%= shortURL %></a></h2>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center">
         <form action="/urls/<%= shortURL %>?_method=put" method="POST">
-       <input class="form-control" type="text" name="longURL" value="<%= longURL %>" style="width: 300px;">
-    <div style="display: flex; align-items: center; justify-content: center; padding-top: 5px">
-        <button type="submit" class="btn btn-primary">Edit</button></form>
-         <form method="POST" action="/urls/<%= shortURL %>?_method=delete"> &nbsp;
-        <button type="submit" class="btn btn-danger">Delete</button></form>
-</div></div>
-<br>
+            <input class="form-control" type="text" name="longURL" value="<%= longURL %>" style="width: 300px;">
+            <div style="display: flex; align-items: center; justify-content: center; padding-top: 5px">
+                <button type="submit" class="btn btn-primary">Edit</button>
+        </form>
+        <form method="POST" action="/urls/<%= shortURL %>?_method=delete"> &nbsp;
+            <button type="submit" class="btn btn-danger">Delete</button></form>
+    </div>
+    <br>
     This link has been used <%= info.views %> times!<br>
     There have been <%= info.uniqueViews %> unique views.<br>
     <br>data:
     <% for (let users in info.uniqueVisitors) { %>
-        <br> <%= users %><ul>
-         <li style="width: 80%"><%= info.uniqueVisitors[users] %></li>
-        </ul><% } %>
+    <br> <%= users %><ul>
+        <li style="width: 80%"><%= info.uniqueVisitors[users] %></li>
+    </ul><% } %>
 
-<% include ../partials/_footer %>
+    <% include ../partials/_footer %>
 </body>
 
 </html>

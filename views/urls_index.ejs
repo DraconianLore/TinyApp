@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>URL Index - TinyApp</title>
-  </head>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+  <title>URL Index - TinyApp</title>
+</head>
 
 <body style="font-size:20px;">
-<% include ../partials/_header %>
-<% if (user_id) { %>
-<h2> Current URL Shortcuts:</h2>
-    <ul>
+  <% include ../partials/_header %>
+  <% if (user_id) { %>
+  <h2> Current URL Shortcuts:</h2>
+  <ul>
     <% for (url in urls) { %>
-      <% if (urls[url].userID == user_id) { %>
-      <li><a href="/u/<%= url %>"><%= url %></a> - <%= urls[url].views %> Views
-        <br><%=  urls[url].longURL %><br>
-        <form style="display: inline-block" method="POST" action="/urls/<%= url %>?_method=delete">
-          <button style="margin-right:5px; type="submit" class="btn btn-danger btn-sm">Delete 🗑</button></form>
-          <a href='/urls/<%= url %>'><button type="button" class="btn btn-primary btn-sm">Edit &#128221;</button></a>
-      </li>
-      <% }} %>
-         </ul>
-         <% } else { %>
+    <% if (urls[url].userID == user_id) { %>
+    <li><a href="/u/<%= url %>"><%= url %></a> - <%= urls[url].views %> Views
+      <br><%=  urls[url].longURL %><br>
+      <form style="display: inline-block" method="POST" action="/urls/<%= url %>?_method=delete">
+        <button style="margin-right:5px; type=" submit" class="btn btn-danger btn-sm">Delete 🗑</button></form>
+      <a href='/urls/<%= url %>'><button type="button" class="btn btn-primary btn-sm">Edit &#128221;</button></a>
+    </li>
+    <% }} %>
+  </ul>
+  <% } else { %>
 
-        <div style="text-align: center"> <em>Please <a href="/login">log in</a> or <a href="/register">register</a> <br>to create or edit your TinyURLs</em></div>
-        <% } %>
-     
-<% include ../partials/_footer %>
+  <div style="text-align: center"> <em>Please <a href="/login">log in</a> or <a href="/register">register</a> <br>to
+      create or edit your TinyURLs</em></div>
+  </div>
+  <% } %>
+
+  <% include ../partials/_footer %>
 </body>
+
 </html>
