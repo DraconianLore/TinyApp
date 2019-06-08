@@ -7,9 +7,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-![Home screen](/tinyApp-screenshot1.png?raw=true "Home screen")
-![Edit your TinyUrls](/tinyApp-screenshot2.png?raw=true "Edit your TinyUrls")
-![View your TinyUrls](/tinyApp-screenshot3.png?raw=true "View your TinyUrls")
+<img src="/tinyApp-screenshot1.png" width="360" height="640">
+<img src="/tinyApp-screenshot2.png" width="360" height="640">
+<img src="/tinyApp-screenshot3.png" width="360" height="640">
 
 ## Dependancies
 
