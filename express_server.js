@@ -89,7 +89,7 @@ const backupDatabase = (backupFile, database) => {
     } else {
         whichDB = 'URL';
     }
-   fs.writeFileSync(backupFile, JSON.stringify(database), function (err) {
+    fs.writeFileSync(backupFile, JSON.stringify(database), function (err) {
         if (err) {
             return console.error(err);
         }
@@ -138,7 +138,7 @@ app.get("/urls/:shortURL", (req, res) => {
         user: users,
         info: urlDatabase[shortURL]
     };
-    
+
     // check if user owns URL
     if (templateVars.user_id != urlDatabase[templateVars.shortURL].userID) {
         res.status(403);
