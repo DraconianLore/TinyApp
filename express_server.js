@@ -6,7 +6,6 @@ const app = express();
 const bcrypt = require('bcrypt');
 const PORT = 8080;
 const methodOverride = require('method-override')
-const util = require('util')
 
 function hashPassword(password) {
     return bcrypt.hashSync(password, 10);
